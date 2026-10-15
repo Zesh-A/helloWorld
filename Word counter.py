@@ -25,10 +25,11 @@ w=0
 x=0
 y=0
 z=0
-unprocessedInput=input("Sup: ")
-listedInput=list(unprocessedInput)
-for anything in listedInput:
-	if anything==" ":
+fileName=input("File: ")
+with open(fileName) as fileContents:
+	listedFileContents=list(fileContents.read())
+for anything in listedFileContents:
+	if anything==" " or anything=="\n":
 		words=words+1
 	else:
 		match anything:
@@ -90,4 +91,5 @@ for anything in listedInput:
 
 
 
-print(words, a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+
+print("Words:",words,"\n","Letters:",a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
