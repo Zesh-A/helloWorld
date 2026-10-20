@@ -1,33 +1,23 @@
-notANumber=0
-y=0
+total=0
 sortedList=[]
+intOnlyList=[]
 x="hi"
-theListUnlisted=input("What numbers?: ")
-theList=theListUnlisted.split()
-while y<100:
-	for thing in theList:
-		try:
-			thing=int(thing)
-		except ValueError:
-			theList.remove(thing)
-			break
-	y+=1
-while len(theList)>0:
-	for thing in theList:
+for thing in input("What numbers?: ").split():
+	try:
 		thing=int(thing)
+		intOnlyList.append(thing)
+	except ValueError:
+		pass
+while len(intOnlyList)>0:
+	for thing in intOnlyList:
 		if x=="hi":
 			x=thing
 		else:
-			try:
-				if thing<x:
-					x=thing
-			except TypeError:
-				pass
-	x=str(x)
-	sortedList.append(x)
-	print(x)
-	theList.remove(x)
-	x="hi"
-print(sortedList)
-if notANumber!=0:
-	print("btw you said",notANumber,"things that aren't numbers")
+			if thing<int(x):
+				x=thing
+	if x!="hi":
+		total=total+int(x)
+		sortedList.append(int(x))
+		intOnlyList.remove(int(x))
+		x="hi"
+print(sortedList,"\nmean:",total/int(len(sortedList)),"\nmedian:",sortedList[int(len(sortedList))//2])
