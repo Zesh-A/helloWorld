@@ -1,13 +1,24 @@
 listOfInts=input("Numbers: ").split()
-print(listOfInts)
 listOfInts=list(map(int,listOfInts))
 targetNumber=int(input("Target number: "))
 for numberOne in listOfInts:
 	for numberTwo in listOfInts:
-		if numberOne+numberTwo==targetNumber:
-			firstNumberPosition=listOfInts.index(numberOne)
-			secondNumberPosition=listOfInts.index(numberTwo)
+		if numberOne!=numberTwo:
+			for operation in ["+","-","*","/"]:
+				match operation:
+					case "+":
+						answer=numberOne+numberTwo
+					case "-":
+						answer=numberOne-numberTwo
+					case "*":
+						answer=numberOne*numberTwo
+					case "/":
+						answer=numberOne/numberTwo
+				if answer==targetNumber:
+					correctFirstNumber=numberOne
+					correctSecondNumber=numberTwo
+					operationAnswer=operation
 try:
-	print(firstNumberPosition+1,secondNumberPosition+1)
+	print(correctFirstNumber,operationAnswer,correctSecondNumber)
 except NameError:
 	print("couldn't find a match")
