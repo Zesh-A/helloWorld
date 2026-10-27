@@ -1,10 +1,12 @@
 import random
 deck=["Strike","Strike","Strike","Strike","Defend","Defend","Defend","Defend","Inflame","Footwork"]
-otherCards=[]
+otherCards=["Iron Wave", "Wisp","Friendship","The Scythe","Celestial Might","Dagger Spray", "Dash", "Blood Wall", "Fight Me", "Bludgeon", "Bloodletting","Not Yet", "Claw", "Leap"]
 hand=[]
 enemyDifficulty=4
 playingGame="yup"
 playerHP=100
+scytheDamage=0
+scytheRemoved="false"
 enemyChoices=["attack","block","buff"]
 while playingGame=="yup":
 	enemyHP=int(enemyDifficulty)*10+random.randint(int(enemyDifficulty)*3*-1,int(enemyDifficulty)*3)
@@ -16,10 +18,12 @@ while playingGame=="yup":
 	playerBlock=0
 	enemyAttacking=0
 	playerAttacking=0
+	isFriend=0
+	clawsPlayed=0
 	while enemyHP>0:
 		print("Enemy HP:",enemyHP,"\nYour HP:",playerHP,"\nYour Dex:", playerDex,"\nYour Str:",playerStrength,"\n")
 		hand=random.sample(deck,5)
-		energy=3
+		energy=3+isFriend
 		playerBlock=0
 		enemyIntent=random.sample(enemyChoices,2)
 		for thing in enemyIntent:
@@ -53,6 +57,93 @@ while playingGame=="yup":
 				hand.remove(play)
 				energy-=1
 				playerDex+=2
+			if play=="Iron Wave":
+				playerBlock+=5+playerDex
+				playerAttacking+=5+playerStrength
+				hand.remove(play)
+				energy-=1
+			if play=="Wisp":
+				hand.remove(play)
+				energy+=1
+			if play=="Friendship":
+				hand.remove(play)
+				isFriend+=1
+				playerStrength-=2
+				energy-=1
+			if play=="The Scythe":
+				if energy>1:
+					hand.remove(play)
+					deck.remove(play)
+					scytheRemoved="True"
+					playerAttacking+=13+playerStrength+scytheDamage
+					scytheDamage+=5
+					energy-=2
+				else:
+					print("You don't have enough energy")
+			if play=="Celestial Might":
+				if energy>1:
+					hand.remove(play)
+					playerAttacking+=6+playerStrength
+					playerAttacking+=6+playerStrength
+					playerAttacking+=6+playerStrength
+					energy-=2
+				else:
+					print("You don't have enough energy")
+			if play=="Dagger Spray":
+				hand.remove(play)
+				playerAttacking+=4+playerStrength
+				playerAttacking+=4+playerStrength
+				energy-=1
+			if play=="Dash":
+				if energy>1:
+					hand.remove(play)
+					playerAttacking+=10+playerStrength
+					playerBlock+=10+playerDex
+					energy-=2
+				else:
+					print("You don't have enough energy")
+			if play=="Blood Wall":
+				if energy>1:
+					hand.remove(play)
+					playerHP-=2
+					playerBlock+=16+playerDex
+					energy-=2
+				else:
+					print("You dont have enough energy")
+			if play=="Fight Me":
+				if energy>1:
+					hand.remove(play)
+					playerAttacking+=5+playerStrength
+					playerAttacking+=5+playerStrength
+					playerStrength+=3
+					enemyStrength+=1
+					energy-=2
+				else:
+					print("You don't have enough energy")
+			if play=="Bludgeon":
+				if energy>2:
+					hand.remove(play)
+					playerAttacking+=32+playerStrength
+					energy-=3
+			if play=="Bloodletting":
+				hand.remove(play)
+				playerHP-=3
+				energy+=2
+			if play=="Not Yet":
+				if energy>1:
+					hand.remove(play)
+					playerHP+=10
+					energy-=2
+				else:
+					print("You don't have enough energy")
+			if play=="Claw":
+				hand.remove(play)
+				playerAttacking+=3+playerStrength+clawsPlayed
+				clawsPlayed+=2
+			if play=="Leap":
+				playerBlock+=9+playerDex
+				hand.remove(play)
+				energy-=1
 		print("\n")
 		if playerAttacking>enemyBlock:
 			print("you dealt",playerAttacking-enemyBlock,"damage")
@@ -80,4 +171,13 @@ while playingGame=="yup":
 		playerAttacking=0
 		print("\n")
 	enemyDifficulty+=1
-	print("You killed it ):")
+	print("You killed it ):\n")
+	cardChoices=random.sample(otherCards,3)
+	print(cardChoices)
+	cardChoosen=(cardChoices[int(input("Which do you want?: "))-1])
+	deck.append(cardChoosen)
+	if cardChoosen=="The Scythe":
+		otherCards.remove("The Scythe")
+	if scytheRemoved=="True":
+		deck.append("The Scythe")
+		scytheRemoved="false"
