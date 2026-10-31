@@ -20,8 +20,39 @@ enemyChoices=["attack","block","buff"]
 flowey=0
 plating=0
 extraEnergy=0
+paths=["Elite","Campfire","Chest"]
+room=0
+isItElite="No"
 while playingGame=="yup":
+	room+=1
+	howManyOptions=random.randint(0,4)
+	if howManyOptions==3 or howManyOptions==4:
+		howManyOptions=0
+	pathOptions=random.sample(paths,random.randint(0,2))
+	pathOptions.append("Normal")
+	print(pathOptions)
+	nextRoom=pathOptions[int(input("Which way?"))-1]
+	if nextRoom=="Normal":
+		pass
+	elif nextRoom=="Chest":
+		relicGained=random.sample(relics,1)[0]
+		relicsOwned.append(relicGained)
+		relics.remove(relicGained)
+		if relicGained=="Lee's Waffel":
+			playerMaxHP+=7
+			playerHP=playerMaxHP
+		if relicGained=="Bread":
+			extraEnergy=1
+		print("Your relics:",relicsOwned)
+		continue
+	elif nextRoom=="Campfire":
+		playerHP=playerMaxHP
+		continue
+	elif nextRoom=="Elite":
+		isItElite="Yes"
 	enemyHP=int(enemyDifficulty)*10+random.randint(int(enemyDifficulty)*2*-1,int(enemyDifficulty)*2)
+	if isItElite=="Yes":
+		enemyHP*=2
 	enemyStrength=0
 	enemyDex=0
 	playerStrength=0
@@ -79,13 +110,20 @@ while playingGame=="yup":
 		for thing in enemyIntent:
 			if thing=="attack":
 				enemyAttacking=enemyDifficulty*3+random.randint(enemyDifficulty*-1,enemyDifficulty)+enemyStrength
+				if isItElite=="Yes":
+					enemyAttacking=round(enemyAttacking*1.3)
 				print("enemy is attacking for",enemyAttacking)
 			if thing=="block":
 				enemyBlock+=enemyDifficulty*2+random.randint(enemyDifficulty*-1,enemyDifficulty)+enemyDex
+				if isItElite=="Yes":
+					enemyBlock=round(enemyBlock*1.3)
 				print("enemy is blocking for",enemyBlock)
 			if thing=="buff":
 				enemyDex+=1
 				enemyStrength+=1
+				if isItElite=="Yes":
+					enemyDex+=1
+					enemyStrength+=1
 				print("Enemy is buffing")
 		while energy>-1:
 			print(hand)
@@ -139,7 +177,7 @@ while playingGame=="yup":
 			if play=="The Scythe":
 				if energy>1:
 					playCard(hand, discardPile, play, 2)
-					deck.remove(play)
+					discardPile.remove(play)
 					scytheRemoved="True"
 					playerAttacking+=13+playerStrength+scytheDamage
 					scytheDamage+=5
@@ -220,8 +258,9 @@ while playingGame=="yup":
 			plating-=1
 		if "Mercury Hourglass" in relicsOwned:
 			playerAttacking+=3
-		if playerBlock>=10:
-			playerAttacking+=6
+		if "Parrying Shield" in relicsOwned:
+			if playerBlock>=10:
+				playerAttacking+=6
 		print("\n")
 		if playerAttacking>enemyBlock:
 			print("you dealt",playerAttacking-enemyBlock,"damage")
@@ -254,6 +293,8 @@ while playingGame=="yup":
 		for cardUnplayed in hand:
 			discardPile.append(cardUnplayed)
 		hand.clear()
+	if playingGame=="nope":
+		break
 	enemyDifficulty+=1
 	print("You killed it ):\n")
 	for thingy in discardPile:
@@ -268,12 +309,18 @@ while playingGame=="yup":
 	if scytheRemoved=="True":
 		deck.append("The Scythe")
 		scytheRemoved="false"
-	relicGained=random.sample(relics,1)[0]
-	relicsOwned.append(relicGained)
-	relics.remove(relicGained)
-	if relicGained=="Lee's Waffel":
-		playerMaxHP+=7
-		playerHP=playerMaxHP
-	if relicGained=="Bread":
-		extraEnergy=1
-	print("Your Relics: ",relicsOwned)
+	if isItElite=="Yes":
+		relicGained=random.sample(relics,1)[0]
+		relicsOwned.append(relicGained)
+		relics.remove(relicGained)
+		if relicGained=="Lee's Waffel":
+			playerMaxHP+=7
+			playerHP=playerMaxHP
+		if relicGained=="Bread":
+			extraEnergy=1
+		isItElite="No"
+	print("Your Relics: ",relicsOwned, "\nYour health:", playerHP, "\nYour deck:", deck)
+	pathOptions=random.sample(paths,random.randint(0,2))
+	pathOptions.append("Normal")
+	print(pathOptions)
+	nextRoom=pathOptions[int(input("Which way?"))-1]
