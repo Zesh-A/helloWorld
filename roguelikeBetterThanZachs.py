@@ -23,36 +23,47 @@ extraEnergy=0
 paths=["Elite","Campfire","Chest"]
 room=0
 isItElite="No"
+halfway="huh"
+isItBoss="Prolly not"
 while playingGame=="yup":
 	room+=1
-	howManyOptions=random.randint(0,4)
-	if howManyOptions==3 or howManyOptions==4:
-		howManyOptions=0
-	pathOptions=random.sample(paths,random.randint(0,2))
-	pathOptions.append("Normal")
-	print(pathOptions)
-	nextRoom=pathOptions[int(input("Which way?"))-1]
-	if nextRoom=="Normal":
-		pass
-	elif nextRoom=="Chest":
-		relicGained=random.sample(relics,1)[0]
-		relicsOwned.append(relicGained)
-		relics.remove(relicGained)
-		if relicGained=="Lee's Waffel":
-			playerMaxHP+=7
+	enemyDifficulty=room+3
+	if room==10:
+		isItBoss="Yuppers"
+		print("You're fighting Geraldine. She's nice. Unless you didn't bring pizza.")
+	else:
+		howManyOptions=random.randint(0,2)
+		if howManyOptions==3:
+			howManyOptions=0
+		pathOptions=random.sample(paths,random.randint(0,howManyOptions))
+		pathOptions.append("Normal")
+		print(pathOptions)
+		nextRoom=pathOptions[int(input("Which way?: "))-1]
+		print(nextRoom)
+		if nextRoom=="Normal":
+			pass
+		elif nextRoom=="Chest":
+			relicGained=random.sample(relics,1)[0]
+			relicsOwned.append(relicGained)
+			relics.remove(relicGained)
+			if relicGained=="Lee's Waffel":
+				playerMaxHP+=7
+				playerHP=playerMaxHP
+			if relicGained=="Bread":
+				extraEnergy=1
+			print("Your relics:",relicsOwned)
+			continue
+		elif nextRoom=="Campfire":
+			print("you are fully rested")
 			playerHP=playerMaxHP
-		if relicGained=="Bread":
-			extraEnergy=1
-		print("Your relics:",relicsOwned)
-		continue
-	elif nextRoom=="Campfire":
-		playerHP=playerMaxHP
-		continue
-	elif nextRoom=="Elite":
-		isItElite="Yes"
+			continue
+		elif nextRoom=="Elite":
+			isItElite="Yes"
 	enemyHP=int(enemyDifficulty)*10+random.randint(int(enemyDifficulty)*2*-1,int(enemyDifficulty)*2)
 	if isItElite=="Yes":
 		enemyHP*=2
+	if isItBoss=="Yuppers":
+		enemyHP=250
 	enemyStrength=0
 	enemyDex=0
 	playerStrength=0
@@ -112,11 +123,15 @@ while playingGame=="yup":
 				enemyAttacking=enemyDifficulty*3+random.randint(enemyDifficulty*-1,enemyDifficulty)+enemyStrength
 				if isItElite=="Yes":
 					enemyAttacking=round(enemyAttacking*1.3)
+				if isItBoss=="Yuppers":
+					enemyAttacking=round(enemyAttacking*1.8)
 				print("enemy is attacking for",enemyAttacking)
 			if thing=="block":
 				enemyBlock+=enemyDifficulty*2+random.randint(enemyDifficulty*-1,enemyDifficulty)+enemyDex
 				if isItElite=="Yes":
 					enemyBlock=round(enemyBlock*1.3)
+				if isItBoss=="Yuppers":
+					enemyBlock=round(enemyBlock*1.7)
 				print("enemy is blocking for",enemyBlock)
 			if thing=="buff":
 				enemyDex+=1
@@ -124,13 +139,18 @@ while playingGame=="yup":
 				if isItElite=="Yes":
 					enemyDex+=1
 					enemyStrength+=1
+				if isItBoss=="Yuppers":
+					enemyDex+=2
+					enemyStrength+=2
 				print("Enemy is buffing")
+		if isItBoss=="Yuppers":
+			print("WHERE'S MY PIZZA?!?!?!?!?!?!?!?!??")
 		while energy>-1:
 			print(hand)
 			print("Energy:",energy)
 			try:
 				play=hand[int(input("What do you play?: "))-1]
-			except ValueError:
+			except (ValueError,IndexError):
 				print("we'll take that as an end turn!")
 				break
 			if play=="Strike":
@@ -273,7 +293,19 @@ while playingGame=="yup":
 				for cardUnplayed in hand:
 					discardPile.append(cardUnplayed)
 				hand.clear()
+				if isItBoss=="Yuppers":
+					print("You win, thanks for playing!")
+					playingGame="Nah"
+					break
 				continue
+			if isItBoss=="Yuppers":
+				if enemyHP<125:
+					if halfway!="ye":
+						enemyPlating=10
+						enemyStrength+=5
+						enemyDex+=5
+						print("My pizza ):")
+						halfway="ye"
 		else:
 			print("you dealt 0 damage")
 		if enemyAttacking>playerBlock:
@@ -320,7 +352,3 @@ while playingGame=="yup":
 			extraEnergy=1
 		isItElite="No"
 	print("Your Relics: ",relicsOwned, "\nYour health:", playerHP, "\nYour deck:", deck)
-	pathOptions=random.sample(paths,random.randint(0,2))
-	pathOptions.append("Normal")
-	print(pathOptions)
-	nextRoom=pathOptions[int(input("Which way?"))-1]
